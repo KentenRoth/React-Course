@@ -1,22 +1,26 @@
-import React from "react"
-import SearchBar from "./SearchBar"
-
-const unsplash_key = process.env.REACT_APP_UNSPLASH_KEY
-const unsplash_skey = process.env.REACT_APP_UNSPLASH_SKEY
+import React from "react";
+import unsplash from "../api/unsplash";
+import SearchBar from "./SearchBar";
 
 class App extends React.Component {
-    onSearchSubmit(term) {
-        console.log(unsplash_key)
-        console.log(unsplash_skey)
-    }
+    state = { images: [] };
+
+    onSearchSubmit = async term => {
+        const response = await unsplash.get("/search/photos", {
+            params: { query: term }
+        });
+
+        this.setState({ images: response.data.results });
+    };
 
     render() {
         return (
             <div className="ui container" style={{ marginTop: "10px" }}>
                 <SearchBar onSubmit={this.onSearchSubmit} />
+                Found: {this.state.images.length}
             </div>
-        )
+        );
     }
 }
 
-export default App
+export default App;
